@@ -46,7 +46,7 @@ CHAIN_APPROX_TC89_L1 & CHAIN_APPROX_TC89_KCOS : 점의 개수는 줄어들지만
 
 ![image](https://github.com/user-attachments/assets/92f6c299-fcc2-4f64-bd2e-69653963687c)
 
-    // Step 3: 외곽선 검출을 통한 갈 수 없는 바닥 객체 지우기
+    // Step 3-2: 외곽선 검출 -> 갈 수 없는 바닥 객체 지우기
     cv::cvtColor(sgmt_img, sgmt_img, cv::COLOR_BGR2GRAY);
     std::vector<std::vector<cv::Point>> contours;
     //RETR_EXTERNAL, RETR_LIST || CHAIN_APPROX_NONE, CHAIN_APPROX_SIMPLE
@@ -56,4 +56,25 @@ CHAIN_APPROX_TC89_L1 & CHAIN_APPROX_TC89_KCOS : 점의 개수는 줄어들지만
         if (cv::contourArea(contours[i]) < 50*50) // 면적 기준을 적절히 설정 (contours[i]: 외곽선 개수)
             drawContours(sgmt_img, contours, i, cv::Scalar(0,255,0), -1);
     }
-    RCLCPP_INFO(node->get_logger(), "contours_size : %d", (int)contours.size());
+
+![image](https://github.com/user-attachments/assets/6de4527a-07d1-4b97-8cab-2c8d46835330)
+
+    // Step 2: 이동할 바닥 객체(면적이 가장 큰 객체) 검출
+    std_msgs::msg::Int32 error;
+    int max_area = 0;
+    cv::Mat floor;
+    for(int i = 1; i < lable_cnt; i++) { //'0'은 배경
+        double *p = centroids.ptr<double>(i);
+        int *q = stats.ptr<int>(i);
+
+        if((q[4] > 100) && (max_area < q[4])) { //면적이 100보다 크고, 최대 면적값보다 클 때
+            max_area = q[4];
+            //sgmt_img(cv::Rect(q[0],q[1],q[2],q[3])).copyTo(floor);
+            floor = sgmt_img(cv::Rect(q[0],q[1],q[2],q[3]));
+            present_point = cv::Point2d(p[0], p[1]);
+        }
+        
+        // Step 3-1: 레이블링 -> 갈 수 없는 바닥 객체 지우기
+        if(q[4] < 50*50)
+            rectangle(sgmt_img, cv::Rect(q[0],q[1],q[2],q[3]), cv::Scalar(0,255,0), -1);
+    }
