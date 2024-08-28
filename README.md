@@ -44,7 +44,12 @@ CHAIN_APPROX_TC89_L1 & CHAIN_APPROX_TC89_KCOS : 점의 개수는 줄어들지만
 
 ## "deeplabv3(2).onnx"을 사용했을 때 알고리즘
 
-![image](https://github.com/user-attachments/assets/92f6c299-fcc2-4f64-bd2e-69653963687c)
+![image](https://github.com/user-attachments/assets/b151d36b-e872-45b5-bed2-653805d59342)
+
+![image](https://github.com/user-attachments/assets/fc45c4e7-debc-44de-a6fa-afbc0305e866)
+
+![image](https://github.com/user-attachments/assets/13fca863-0885-4989-af50-fea98b72dbe3)
+
 
     // Step 3-2: 외곽선 검출 -> 갈 수 없는 바닥 객체 지우기
     cv::cvtColor(sgmt_img, sgmt_img, cv::COLOR_BGR2GRAY);
@@ -58,6 +63,9 @@ CHAIN_APPROX_TC89_L1 & CHAIN_APPROX_TC89_KCOS : 점의 개수는 줄어들지만
     }
 
 ![image](https://github.com/user-attachments/assets/6de4527a-07d1-4b97-8cab-2c8d46835330)
+
+![image](https://github.com/user-attachments/assets/4386984f-98cb-48d2-b3ca-32acae2137e9)
+
 
     // Step 2: 이동할 바닥 객체(면적이 가장 큰 객체) 검출
     std_msgs::msg::Int32 error;
