@@ -1,4 +1,7 @@
-## 외곽선 검출 함수(findContours)
+## "deeplabv3(1).onnx"을 사용했을 때 바닥영역의 잡음 제거를 하기 위한 처리
+
+### 외곽선 검출 함수(findContours)
+
 ![image](https://github.com/user-attachments/assets/4142e60c-faae-44dd-8d5c-c647150a91f2)
 ![image](https://github.com/user-attachments/assets/9296ce57-9348-4df0-8901-dee47222ad3f)
 
@@ -35,4 +38,11 @@ CHAIN_APPROX_SIMPLE : 외곽선 중에서 수평선, 수직선, 대각선 성분
 
 CHAIN_APPROX_TC89_L1 & CHAIN_APPROX_TC89_KCOS : 점의 개수는 줄어들지만 외곽선 모양에 변화가 생김. (주의 필요)
 
+
+
+
+
+## "deeplabv3(2).onnx"을 사용했을 때 알고리즘
+
+![image](https://github.com/user-attachments/assets/92f6c299-fcc2-4f64-bd2e-69653963687c)
 
