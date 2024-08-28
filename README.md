@@ -46,3 +46,14 @@ CHAIN_APPROX_TC89_L1 & CHAIN_APPROX_TC89_KCOS : 점의 개수는 줄어들지만
 
 ![image](https://github.com/user-attachments/assets/92f6c299-fcc2-4f64-bd2e-69653963687c)
 
+    // Step 3: 외곽선 검출을 통한 갈 수 없는 바닥 객체 지우기
+    cv::cvtColor(sgmt_img, sgmt_img, cv::COLOR_BGR2GRAY);
+    std::vector<std::vector<cv::Point>> contours;
+    //RETR_EXTERNAL, RETR_LIST || CHAIN_APPROX_NONE, CHAIN_APPROX_SIMPLE
+    cv::findContours(sgmt_img, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+    cv::cvtColor(sgmt_img, sgmt_img, cv::COLOR_GRAY2BGR);
+    for(int i = 0; i < (int)contours.size(); i++) {
+        if (cv::contourArea(contours[i]) < 50*50) // 면적 기준을 적절히 설정 (contours[i]: 외곽선 개수)
+            drawContours(sgmt_img, contours, i, cv::Scalar(0,255,0), -1);
+    }
+    RCLCPP_INFO(node->get_logger(), "contours_size : %d", (int)contours.size());
