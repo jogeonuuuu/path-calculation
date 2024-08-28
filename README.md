@@ -44,23 +44,7 @@ CHAIN_APPROX_TC89_L1 & CHAIN_APPROX_TC89_KCOS : 점의 개수는 줄어들지만
 
 ## "deeplabv3(2).onnx"을 사용했을 때 알고리즘
 
-![image](https://github.com/user-attachments/assets/b151d36b-e872-45b5-bed2-653805d59342)
-
-![image](https://github.com/user-attachments/assets/fc45c4e7-debc-44de-a6fa-afbc0305e866)
-
-![image](https://github.com/user-attachments/assets/13fca863-0885-4989-af50-fea98b72dbe3)
-
-
-    // Step 3-2: 외곽선 검출 -> 갈 수 없는 바닥 객체 지우기
-    cv::cvtColor(sgmt_img, sgmt_img, cv::COLOR_BGR2GRAY);
-    std::vector<std::vector<cv::Point>> contours;
-    //RETR_EXTERNAL, RETR_LIST || CHAIN_APPROX_NONE, CHAIN_APPROX_SIMPLE
-    cv::findContours(sgmt_img, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
-    cv::cvtColor(sgmt_img, sgmt_img, cv::COLOR_GRAY2BGR);
-    for(int i = 0; i < (int)contours.size(); i++) {
-        if (cv::contourArea(contours[i]) < 50*50) // 면적 기준을 적절히 설정 (contours[i]: 외곽선 개수)
-            drawContours(sgmt_img, contours, i, cv::Scalar(0,255,0), -1);
-    }
++ 이동할 수 없는 바닥 지우는 방법(1)
 
 ![image](https://github.com/user-attachments/assets/6de4527a-07d1-4b97-8cab-2c8d46835330)
 
@@ -86,3 +70,49 @@ CHAIN_APPROX_TC89_L1 & CHAIN_APPROX_TC89_KCOS : 점의 개수는 줄어들지만
         if(q[4] < 50*50)
             rectangle(sgmt_img, cv::Rect(q[0],q[1],q[2],q[3]), cv::Scalar(0,255,0), -1);
     }
+
+
++ 이동할 수 없는 바닥 지우는 방법(2)
+
+![image](https://github.com/user-attachments/assets/b151d36b-e872-45b5-bed2-653805d59342)
+
+![image](https://github.com/user-attachments/assets/fc45c4e7-debc-44de-a6fa-afbc0305e866)
+
+![image](https://github.com/user-attachments/assets/13fca863-0885-4989-af50-fea98b72dbe3)
+
+위 그림은 외곽선 검출 모드를 "RETR_LIST"로 주었을 때 문제점을 발생하는 것을 볼 수 있음.
+
+~~문제점1 : 계층 구조를 가지지않아 잘못된 객체 접근.~~
+
+아래 그림의 외곽선 검출 모드는 "RETR_EXTERNAL" -> 이상없는 것을 확인할 수 있음.
+
+![image](https://github.com/user-attachments/assets/c0e8f679-82e0-47f7-b89f-8fd8395b8a67)
+
+
+    // Step 3-2(1): 외곽선 검출 -> 갈 수 없는 바닥 객체 지우기
+    cv::cvtColor(sgmt_img, sgmt_img, cv::COLOR_BGR2GRAY);
+    std::vector<std::vector<cv::Point>> contours;
+    //RETR_EXTERNAL, RETR_LIST || CHAIN_APPROX_NONE, CHAIN_APPROX_SIMPLE
+    cv::findContours(sgmt_img, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+    cv::cvtColor(sgmt_img, sgmt_img, cv::COLOR_GRAY2BGR);
+    for(int i = 0; i < (int)contours.size(); i++) {
+        if (cv::contourArea(contours[i]) < 50*50) // 면적 기준을 적절히 설정 (contours[i]: 외곽선 개수)
+            drawContours(sgmt_img, contours, i, cv::Scalar(0,255,0), -1);
+    }
+
+-------------------------------------------------------------------------------------------------------
+    
+    // Step 3-2(2)
+    /*cv::cvtColor(sgmt_img, sgmt_img, cv::COLOR_BGR2GRAY);
+    std::vector<std::vector<cv::Point>> contours;
+    std::vector<cv::Vec4i> hierarchy;
+    //RETR_CCOMP, RETR_TREE || CHAIN_APPROX_NONE, CHAIN_APPROX_SIMPLE
+    cv::findContours(sgmt_img, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
+    cv::cvtColor(sgmt_img, sgmt_img, cv::COLOR_GRAY2BGR);
+    for(int i = 0; i < (int)contours.size(); i++) {
+        // 부모 외곽선만 확인 (hierarchy[i][3]이 -1이면 부모 외곽선임)
+        if (hierarchy[i][3] == -1 && cv::contourArea(contours[i]) < 50*50)
+            drawContours(sgmt_img, contours, i, cv::Scalar(0,255,0), -1);
+    }*/
+
+
