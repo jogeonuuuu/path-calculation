@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(img_cvs)
+project(get_error)
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
