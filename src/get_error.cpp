@@ -191,7 +191,7 @@ void mysub_callback(rclcpp::Node::SharedPtr node,
 int main(int argc, char* argv[])
 {
     rclcpp::init(argc, argv);
-    auto node = std::make_shared<rclcpp::Node>("error_Node");
+    auto node = std::make_shared<rclcpp::Node>("path_calc_Node");
 
     auto pub = node-> create_publisher<std_msgs::msg::Int32>("error",
         rclcpp::QoS(rclcpp::KeepLast(10)));
